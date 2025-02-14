@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 
 import { Breakpoints } from "../../../../constants/breakpoints"
 import { Colors } from "../../../../constants/colors"
-import { FontWeights } from "../../../../constants/fonts"
+import { FontSizes, FontWeights } from "../../../../constants/fonts"
 import { Margins } from "../../../../constants/margins"
 import { Paddings } from "../../../../constants/paddings"
 
@@ -16,15 +16,15 @@ export const HeaderContent = styled.div`
   align-items: center;
 `
 
-export const List = styled.ul`
+export const Nav = styled.div`
   display: flex;
   gap: ${Margins.M1}
 `
 
-export const Li = styled.li<{isCurrent?: boolean, isDisabled?: boolean}>`
-  list-style-type: none;
+export const NavLink = styled.span<{isCurrent?: boolean, isDisabled?: boolean}>`
   color: ${props => props.isCurrent ? Colors.YELLOW : Colors.WHITE_TEXT};
-  font-weight: ${props => props.isCurrent ? FontWeights.SEMI_BOLD : FontWeights.REGULAR};
+  font-size: ${FontSizes.HEADER_LINK};
+  text-transform: uppercase;
   opacity: ${props => props.isCurrent ? 1 : 0.7};
   cursor: ${props => (props.isCurrent || props.isDisabled) ? 'auto' : 'pointer'};
   pointer-events: ${props => props.isCurrent ? 'none' : 'auto'};

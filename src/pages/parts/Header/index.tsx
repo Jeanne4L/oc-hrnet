@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 import Logo from "../../../components/icons/Logo"
-import { List, Li, HeaderContent } from "./styles"
+import { HeaderContent, Nav, NavLink } from "./styles"
 
 const Header = () => {
   const [currentPage, setCurrentPage] = useState<string | null>(null)
+
+  const navigate = useNavigate()
 
   const pathname = window.location.pathname
 
@@ -21,11 +24,11 @@ const Header = () => {
       <HeaderContent>
         <Logo/>
 
-        <List>
-          <Li isCurrent={currentPage === 'home'}>Create</Li>
-          <Li isDisabled>\</Li>
-          <Li isCurrent={currentPage === 'employees'}>Employees</Li>
-        </List>
+        <Nav>
+          <NavLink isCurrent={currentPage === 'home'} onClick={() => navigate('/')}>Create</NavLink>
+          <>\</>
+          <NavLink isCurrent={currentPage === 'employees'} onClick={() => navigate('/employees')}>Employees</NavLink>
+        </Nav>
       </HeaderContent>
     </header>
   )
