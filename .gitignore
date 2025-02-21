@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 .vite
+
+# Test
+coverage
+
+package-lock.json
