@@ -27,3 +27,5 @@ dist-ssr
 
 # Test
 coverage
+
+package-lock.json

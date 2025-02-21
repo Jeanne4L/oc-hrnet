@@ -1,22 +1,23 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { describe, expect, test, vi } from 'vitest'
+import { useNavigate } from "react-router-dom"
 import '@testing-library/jest-dom'
+import { fireEvent, render, screen } from "@testing-library/react"
 
 import { Colors } from "../../../constants/colors"
 import Header from "."
-import { useNavigate } from "react-router-dom"
 
 Object.defineProperty(window, 'location', {
   value: { pathname: '/' },
   writable: true,
 })
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: jest.fn()
+vi.mock("react-router-dom", () => ({
+  ...vi.importActual("react-router-dom"),
+  useNavigate: vi.fn()
 }))
 
 describe('Header', () => {
-  it('contains a logo and other pages links', () => {
+  test('contains a logo and other pages links', () => {
     render(<Header />) 
 
     const logo = screen.getByTestId('logo')
@@ -26,9 +27,9 @@ describe('Header', () => {
     expect(screen.getByText(/Employees/)).toBeTruthy()
   })
 
-  it.only('should navigate to the correct page when links are clicked', () => {
-    const mockNavigate = jest.fn()
-    ;(useNavigate as jest.Mock).mockReturnValue(mockNavigate)
+  test('should navigate to the correct page when links are clicked', () => {
+    const mockNavigate = vi.fn()
+    vi.mocked(useNavigate).mockReturnValue(mockNavigate)
 
     render(<Header />)
 
@@ -43,7 +44,7 @@ describe('Header', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/employees')
   })
 
-  it.each([
+  test.each([
     ['/', 'Create', Colors.YELLOW], 
     ['/employees', 'Employees', Colors.YELLOW]
   ])(
