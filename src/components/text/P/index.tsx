@@ -9,7 +9,7 @@ type PProps = {
   style?: CSSProperties
 }
 
-const P = ({ fontSize = FontSizes.HEADER_LINK, children, style }: PProps) => {
+const P = ({ fontSize = FontSizes.TEXT, children, style }: PProps) => {
   return (
     <Paragraph fontSize={fontSize} style={style}>{children}</Paragraph>
   )
