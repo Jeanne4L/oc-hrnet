@@ -8,5 +8,6 @@ export enum FontWeights {
 export enum FontSizes {
   H1 = '36px',
   H2 = '28px',
+  TEXT = '16px',
   HEADER_LINK = '14px'
 }
