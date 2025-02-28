@@ -25,10 +25,21 @@ export const Input = styled.input`
   border: solid 1px ${Colors.BLUE};
   background-color: ${Colors.TRANSPARENT_BLUE};
   font-size: ${FontSizes.TEXT};
-
+  
   &:focus {
     outline: none;
     border-color: ${Colors.YELLOW}; 
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    width: 16px;
+    outline: none;
+    
+    &:focus {
+      filter: brightness(0) saturate(100%) invert(99%) sepia(38%) saturate(6402%) hue-rotate(323deg) brightness(98%) contrast(93%);
+    }
   }
 `
 
