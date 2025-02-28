@@ -14,3 +14,16 @@
 body {
   background: url('/assets/background.svg') center 150px no-repeat #011826;
 }
+
+::-webkit-scrollbar {
+  width: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1D5A73;
+  border-radius: 4px;
+}
