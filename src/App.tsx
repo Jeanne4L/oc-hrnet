@@ -1,11 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import { routes } from './routes'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+const App = () => {
+
+  return (
     <BrowserRouter>
       <Routes>
         {routes.map((route) => (
@@ -13,5 +12,7 @@ createRoot(document.getElementById('root')!).render(
         ))}
       </Routes>
     </BrowserRouter>
-  </StrictMode>,
-)
+  )
+}
+
+export default App
