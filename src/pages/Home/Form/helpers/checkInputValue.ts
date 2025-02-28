@@ -6,14 +6,37 @@ const checkTextValue = (value: string) => {
   return stringRegex.test(value.trim())
 }
 
-export const checkInputValue = (value: string, type: string) => {
+const checkZipValue = (value: string) => {
+  const zipRegex = /^\d{5}(-\d{4})?$/
+
+  return zipRegex.test(value.trim())
+}
+
+const checkDateValue = (value: string) => {
+  const date = new Date(value)
+
+  return !isNaN(date.getTime())
+}
+
+export const checkInputValue = (value: string, type: string, name: string) => {
   switch(type) {
     case 'text':
-      if (!checkTextValue(value)) {
-        return InputsError.TEXT_INPUT;
+      if(name === 'zipCode') {
+        if(!checkZipValue(value)) {
+          return InputsError.INCORRECT_FORMAT
+        }
+      } else if (!checkTextValue(value)) {
+        return InputsError.TEXT_INPUT
       } 
+      break
+
+    case 'date':
+      if(!checkDateValue(value)) {
+        return InputsError.INCORRECT_FORMAT
+      }
       break
     
     default: return null
   }
+  return null
 }
