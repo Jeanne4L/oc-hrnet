@@ -12,31 +12,36 @@ const checkZipValue = (value: string) => {
   return zipRegex.test(value.trim())
 }
 
+const checkStreetValue = (value: string) => {
+  const streetRegex = /^[a-zA-Z0-9\-\#\./&', ]+$/
+
+  return streetRegex.test(value.trim())
+}
+
 const checkDateValue = (value: string) => {
   const date = new Date(value)
-
+  
   return !isNaN(date.getTime())
 }
 
 export const checkInputValue = (value: string, type: string, name: string) => {
-  switch(type) {
-    case 'text':
-      if(name === 'zipCode') {
-        if(!checkZipValue(value)) {
-          return InputsError.INCORRECT_FORMAT
-        }
-      } else if (!checkTextValue(value)) {
-        return InputsError.TEXT_INPUT
-      } 
-      break
-
-    case 'date':
-      if(!checkDateValue(value)) {
-        return InputsError.INCORRECT_FORMAT
-      }
-      break
-    
-    default: return null
+  const validators: Record<string, (val: string) => boolean> = {
+    text: checkTextValue,
+    date: checkDateValue,
+    zipCode: checkZipValue,
+    street: checkStreetValue
   }
-  return null
+
+  const errors: Record<string, InputsError> = {
+    text: InputsError.TEXT_INPUT,
+    date: InputsError.INCORRECT_FORMAT,
+    zipCode: InputsError.INCORRECT_FORMAT,
+    street: InputsError.INCORRECT_FORMAT
+  }
+
+  const result = validators[name] ? (validators[name](value) ? null : errors[name]) 
+    : validators[type] ? (validators[type](value) ? null : errors[type])
+    : null
+
+  return result
 }

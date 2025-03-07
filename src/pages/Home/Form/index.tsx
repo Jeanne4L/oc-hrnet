@@ -52,63 +52,47 @@ const Form = () => {
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = event.target
-
-    setInputsError({
-      ...inputsError,
-      [name]: checkInputValue(value, type, name)
-    }) 
-
-    setFormData({
-      ...formData,
-      [name]: value
-    })
-
-    if(name === 'zipCode') {
-      if(value.length >= 5) {
-        const citiesApi = await getCities(value)
   
-        if(!checkIfErrorType(citiesApi)) {
-          const filteredStates = states?.filter((state) => 
-            citiesApi.places.some((place) => place.state === state)
-          )
-
-          if(filteredStates) {
-            setStates(filteredStates)
-          }
-
-          setFormData({
-            ...formData,
-            city: citiesApi.places[0].placeName,
-            state: citiesApi.places[0].state
-          })
-          setPlaces([...citiesApi.places])
-          setInputsError({
-            ...inputsError,
-            zipCode: null,
-            city: null,
-            state: null
-          }) 
-        }
-      }
-    }
-
-    if(name === 'city' && places) {
-      const place = places.find((place) => place.placeName === value)
-
-      setFormData({
-        ...formData,
-        state: place?.state ?? ''
-      })
-    }
-
-    if(name === 'state') {
-      const filteredStates = states?.filter((state) => state.toLowerCase().includes(value.toLowerCase()))
-
-      if(filteredStates) {
-        setFilteredStates(filteredStates)
-      }
+    const error = checkInputValue(value, type, name)
+    setInputsError((prev) => ({ ...prev, [name]: error }))
+  
+    setFormData((prev) => ({ ...prev, [name]: value }))
+    
+    if (name === 'zipCode' && value.length >= 5) await handleZipCode(value)
+    if (name === 'city') handleCityChange(value)
+    if (name === 'state') handleStateChange(value)
+  }
+  
+  const handleZipCode = async (zip: string) => {
+    const citiesApi = await getCities(zip)
+  
+    if (!checkIfErrorType(citiesApi)) {
+      const filteredStates = states?.filter((state) =>
+        citiesApi.places.some((place) => place.state === state)
+      )
+  
+      setStates(filteredStates ?? [])
+      setFormData((prev) => ({
+        ...prev,
+        city: citiesApi.places[0].placeName,
+        state: citiesApi.places[0].state
+      }))
+      setPlaces([...citiesApi.places])
+      setInputsError((prev) => ({ ...prev, zipCode: null, city: null, state: null }))
     }
   }
+  
+  const handleCityChange = (city: string) => {
+    const place = places?.find((place) => place.placeName === city)
+    setFormData((prev) => ({ ...prev, state: place?.state ?? '' }))
+  }
+  
+  const handleStateChange = (stateValue: string) => {
+    const filteredStates = states?.filter((state) =>
+      state.toLowerCase().includes(stateValue.toLowerCase())
+    )
+    setFilteredStates(filteredStates ?? [])
+  }  
 
   const handleSubmit = (formData: EmployeeType, inputsError: InputsErrorType) => {
     const isFormValid = Object.values(inputsError).every(error => error === null) && !Object.values(formData).some(value => value === undefined)
@@ -126,13 +110,36 @@ const Form = () => {
     }
   }
 
+  const handleSelect = (selectedOption: string) => {
+    setFormData({
+      ...formData,
+      state: selectedOption
+    })
+  }
+
   return (
     <FormContainer>
-      <PersonalDetailsSection inputsError={inputsError} handleChange={handleChange} />
-      <AddressSection inputsError={inputsError} handleChange={handleChange} formData={formData} setFormData={setFormData} states={filteredStates} />
-      <JobSection inputsError={inputsError} handleChange={handleChange} formData={formData} setFormData={setFormData} />
+      <PersonalDetailsSection 
+        inputsError={inputsError} 
+        handleChange={handleChange} 
+      />
+      <AddressSection 
+        inputsError={inputsError} 
+        states={filteredStates} 
+        formData={formData} 
+        handleSelect={handleSelect} 
+        handleChange={handleChange} 
+      />
+      <JobSection 
+        inputsError={inputsError} 
+        formData={formData} 
+        setFormData={setFormData} 
+        handleChange={handleChange} 
+      />
       {error && <P style={errorStyle}>{error}</P>}
-      <FormActions handleSubmit={() => handleSubmit(formData, inputsError)} />
+      <FormActions 
+        handleSubmit={() => handleSubmit(formData, inputsError)} 
+      />
       {isModalOpen && (
         <SuccessModal 
           message={`Employee has been created !`} 
