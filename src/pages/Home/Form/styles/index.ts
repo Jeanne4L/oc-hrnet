@@ -4,7 +4,7 @@ import styled from "@emotion/styled"
 import { Margins } from "../../../../constants/margins"
 import { Colors } from "../../../../constants/colors"
 
-export const FormContainer = styled.div`
+export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: ${Margins.M8};

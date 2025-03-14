@@ -4,7 +4,7 @@ import { Colors } from "../../../../constants/colors"
 
 export const Svg = styled.svg<{isReturned: boolean}>`
   transform: ${props => props.isReturned ? 'rotate(180deg)' : 'none'};
-  transform-origin: center;
+  transition: transform 200ms;
   outline: none;
 
   &:focus > path {

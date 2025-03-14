@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useForm } from "react-hook-form"
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useEmployees } from "../../../contexts/EmployeesContext"
-import { checkIfErrorType, emptyInputsError, InputsErrorType } from "../../../types/errors"
-import { EmployeeType, emptyEmployee } from "../../../types/employees"
-import { getCities } from "../../../services/api/getCities"
-import { CitiesPlaceType } from "../../../services/api/getCities/types"
+import { checkIfErrorType } from "../../../types/errors"
+import { EmployeeType, emptyEmployee, formSchema } from "../../../types/employees"
 import { getStates } from "../../../services/api/getStates"
 import SuccessModal from "../../../components/SuccessModal"
 import P from "../../../components/text/P"
@@ -13,15 +13,10 @@ import PersonalDetailsSection from "./PersonalDetailsSection"
 import FormActions from "./FormActions"
 import AddressSection from "./Address"
 import JobSection from "./Job"
-import { checkInputValue } from "./helpers/checkInputValue"
 import { errorStyle, FormContainer } from "./styles"
 
 const Form = () => {
-  const [inputsError, setInputsError] = useState<InputsErrorType>(emptyInputsError)
-  const [formData, setFormData] = useState<EmployeeType>(emptyEmployee)
-  const [places, setPlaces] = useState<CitiesPlaceType[] | null>(null)
   const [states, setStates] = useState<string[] | null>(null)
-  const [filteredStates, setFilteredStates] = useState<string[] | null>(null)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,117 +24,62 @@ const Form = () => {
 
   const navigate = useNavigate()
 
+  const { register, formState: { errors }, handleSubmit, setValue, getValues, trigger, control } = useForm({
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+    defaultValues: emptyEmployee
+  })
+
   useEffect(() => {
     (async () => {
       const states = await getStates()
 
-      if(checkIfErrorType(states)) {
-        setInputsError({
-          ...inputsError,
-          state: states.error
-        }) 
-      } else {
+      if(!checkIfErrorType(states)) {
         const statesName = states.map((state) => state.name)
         setStates(statesName)
-        setFilteredStates(statesName)
-        setInputsError({
-          ...inputsError,
-          state: null
-        }) 
       }
     })()
   },[])
 
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = event.target
-  
-    const error = checkInputValue(value, type, name)
-    setInputsError((prev) => ({ ...prev, [name]: error }))
-  
-    setFormData((prev) => ({ ...prev, [name]: value }))
-    
-    if (name === 'zipCode' && value.length >= 5) await handleZipCode(value)
-    if (name === 'city') handleCityChange(value)
-    if (name === 'state') handleStateChange(value)
-  }
-  
-  const handleZipCode = async (zip: string) => {
-    const citiesApi = await getCities(zip)
-  
-    if (!checkIfErrorType(citiesApi)) {
-      const filteredStates = states?.filter((state) =>
-        citiesApi.places.some((place) => place.state === state)
-      )
-  
-      setStates(filteredStates ?? [])
-      setFormData((prev) => ({
-        ...prev,
-        city: citiesApi.places[0].placeName,
-        state: citiesApi.places[0].state
-      }))
-      setPlaces([...citiesApi.places])
-      setInputsError((prev) => ({ ...prev, zipCode: null, city: null, state: null }))
-    }
-  }
-  
-  const handleCityChange = (city: string) => {
-    const place = places?.find((place) => place.placeName === city)
-    setFormData((prev) => ({ ...prev, state: place?.state ?? '' }))
-  }
-  
-  const handleStateChange = (stateValue: string) => {
-    const filteredStates = states?.filter((state) =>
-      state.toLowerCase().includes(stateValue.toLowerCase())
-    )
-    setFilteredStates(filteredStates ?? [])
-  }  
-
-  const handleSubmit = (formData: EmployeeType, inputsError: InputsErrorType) => {
-    const isFormValid = Object.values(inputsError).every(error => error === null) && !Object.values(formData).some(value => value === undefined)
+  const onSubmit = async (data: EmployeeType) => {
+    const isFormValid = await trigger()
 
     if(isFormValid) {
       setEmployees([
         ...employees,
-        formData
+        data
       ])
       setIsModalOpen(true)
-      setFormData(emptyEmployee)
       setError(null)
     } else {
       setError('Please fill in all fields')
     }
   }
 
-  const handleSelect = (selectedOption: string) => {
-    setFormData({
-      ...formData,
-      state: selectedOption
-    })
-  }
-
   return (
-    <FormContainer>
+    <FormContainer onSubmit={handleSubmit(onSubmit)}>
       <PersonalDetailsSection 
-        inputsError={inputsError} 
-        handleChange={handleChange} 
+        inputsError={errors} 
+        register={register}
       />
       <AddressSection 
-        inputsError={inputsError} 
-        states={filteredStates} 
-        formData={formData} 
-        handleSelect={handleSelect} 
-        handleChange={handleChange} 
+        inputsError={errors} 
+        states={states} 
+        register={register}
+        getValues={getValues}
+        setValue={setValue}
+        trigger={trigger}
+        control={control}
       />
       <JobSection 
-        inputsError={inputsError} 
-        formData={formData} 
-        setFormData={setFormData} 
-        handleChange={handleChange} 
+        inputsError={errors} 
+        register={register}
+        setValue={setValue}
+        getValues={getValues}
+        trigger={trigger}
       />
       {error && <P style={errorStyle}>{error}</P>}
-      <FormActions 
-        handleSubmit={() => handleSubmit(formData, inputsError)} 
-      />
+      <FormActions />
       {isModalOpen && (
         <SuccessModal 
           message={`Employee has been created !`} 

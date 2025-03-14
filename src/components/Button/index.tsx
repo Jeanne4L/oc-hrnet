@@ -3,12 +3,13 @@ import { ButtonContainer } from "./styles"
 type ButtonProps = {
   label: string
   variant: 'primary' | 'secondary'
-  onClick: () => void
+  type?: 'submit'
+  onClick?: () => void
 }
 
-const Button = ({ label, variant, onClick }: ButtonProps) => {
+const Button = ({ label, variant, type, onClick }: ButtonProps) => {
   return (
-    <ButtonContainer onClick={onClick} variant={variant}>
+    <ButtonContainer type={type} onClick={onClick} variant={variant}>
       {label}
     </ButtonContainer>
   )

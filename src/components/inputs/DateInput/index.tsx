@@ -1,20 +1,27 @@
+import { DetailedHTMLProps, InputHTMLAttributes } from "react"
+
 import P from "../../text/P"
 import { errorStyle, Input, InputContainer, Label } from "./styles"
 
-type DateInputProps = { 
-  inputId: string
+type DateInputProps = 
+  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {  
   label: string
-  error: string | null
-  minDate?: string | number
+  error?: string
   maxDate?: string | number
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const DateInput = ({ inputId, label, error, minDate, maxDate, onChange }: DateInputProps) => {
+const DateInput = ({ 
+  label, 
+  error, 
+  ...inputProps 
+}: DateInputProps) => {
   return (
     <InputContainer>
-      <Label htmlFor={inputId}>{label}</Label>
-      <Input type='date' id={inputId} name={inputId} onChange={(e) => onChange(e)} min={minDate} max={maxDate}/>
+      <Label htmlFor={inputProps.id}>{label}</Label>
+      <Input 
+        type='date' 
+        {...inputProps}
+      />
       {error && <P style={errorStyle}>{error}</P>}
     </InputContainer>
   )
