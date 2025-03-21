@@ -1,41 +1,22 @@
-import { 
-  UseFormRegister, 
-  FieldErrors, 
-  UseFormSetValue, 
-  UseFormTrigger, 
-  UseFormGetValues 
-} from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 
 import DateInput from "../../../../components/inputs/DateInput"
 import Dropdown from "../../../../components/inputs/Dropdown"
 import H2 from "../../../../components/text/H2"
-import { EmployeeType } from "../../../../types/employees"
+import { getErrorMessage } from "../helpers/getErrorMessage"
 import { FormContent, FormPart } from "../styles"
-
-type JobSectionProps = {
-  inputsError: FieldErrors<EmployeeType>
-  register: UseFormRegister<EmployeeType>
-  setValue: UseFormSetValue<EmployeeType>
-  getValues: UseFormGetValues<EmployeeType>
-  trigger: UseFormTrigger<EmployeeType>
-}
 
 const department = ['Sales', 'Marketing', 'Engineering', 'Human Resources', 'Legal']
 
-const JobSection = ({ 
-  inputsError, 
-  register, 
-  setValue, 
-  getValues, 
-  trigger 
-}: JobSectionProps) => {
+const JobSection = () => {
+  const { formState: { errors }, register, getValues } = useFormContext()
   return (
     <FormPart>
       <H2 text='Job' />
       <FormContent>
         <DateInput 
           label='Start date' 
-          error={inputsError.startDate?.message} 
+          error={getErrorMessage(errors.startDate?.message)} 
           {...register('startDate')}
         />
         <Dropdown 
@@ -43,10 +24,7 @@ const JobSection = ({
           options={department} 
           value={getValues('department')} 
           label='Department' 
-          error={inputsError.department?.message}
-          setValue={setValue} 
-          trigger={trigger} 
-          register={register}
+          error={getErrorMessage(errors.department?.message)}
         />
       </FormContent>
     </FormPart>

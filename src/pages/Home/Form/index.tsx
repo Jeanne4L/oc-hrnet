@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useEmployees } from "../../../contexts/EmployeesContext"
@@ -24,7 +24,7 @@ const Form = () => {
 
   const navigate = useNavigate()
 
-  const { register, formState: { errors }, handleSubmit, setValue, getValues, trigger, control } = useForm({
+  const methods = useForm<EmployeeType>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
     defaultValues: emptyEmployee
@@ -42,7 +42,7 @@ const Form = () => {
   },[])
 
   const onSubmit = async (data: EmployeeType) => {
-    const isFormValid = await trigger()
+    const isFormValid = await methods.trigger()
 
     if(isFormValid) {
       setEmployees([
@@ -57,38 +57,23 @@ const Form = () => {
   }
 
   return (
-    <FormContainer onSubmit={handleSubmit(onSubmit)}>
-      <PersonalDetailsSection 
-        inputsError={errors} 
-        register={register}
-      />
-      <AddressSection 
-        inputsError={errors} 
-        states={states} 
-        register={register}
-        getValues={getValues}
-        setValue={setValue}
-        trigger={trigger}
-        control={control}
-      />
-      <JobSection 
-        inputsError={errors} 
-        register={register}
-        setValue={setValue}
-        getValues={getValues}
-        trigger={trigger}
-      />
-      {error && <P style={errorStyle}>{error}</P>}
-      <FormActions />
-      {isModalOpen && (
-        <SuccessModal 
-          message={`Employee has been created !`} 
-          buttonLabel={"See employees"} 
-          handleButtonClick={() => navigate('/employees')} 
-          handleClose={() => setIsModalOpen(false)} 
-        />
-      )}
-    </FormContainer>
+    <FormProvider {...methods}>
+      <FormContainer onSubmit={methods.handleSubmit(onSubmit)}>
+        <PersonalDetailsSection />
+        <AddressSection states={states} />
+        <JobSection />
+        {error && <P style={errorStyle}>{error}</P>}
+        <FormActions />
+        {isModalOpen && (
+          <SuccessModal 
+            message={`Employee has been created !`} 
+            buttonLabel={"See employees"} 
+            handleButtonClick={() => navigate('/employees')} 
+            handleClose={() => setIsModalOpen(false)} 
+          />
+        )}
+      </FormContainer>
+    </FormProvider>
   )
 }
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { UseFormRegister, UseFormSetValue, UseFormTrigger } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 
-import { EmployeeType } from '../../../types/employees'
 import ChevronIcon from '../../icons/Chevron'
 import TextInput from '../TextInput'
 import { chevronStyle, DropdownContainer, InputContainer, OptionLi, Options } from './styles'
@@ -11,10 +10,7 @@ type DropdownProps = {
   label: string
   value?: string
   error?: string
-  register: UseFormRegister<EmployeeType>
   options: string[] | null
-  setValue: UseFormSetValue<EmployeeType>
-  trigger: UseFormTrigger<EmployeeType>
 }
 
 const Dropdown = ({ 
@@ -22,12 +18,11 @@ const Dropdown = ({
   label, 
   value, 
   error, 
-  options, 
-  register,
-  setValue,
-  trigger
+  options
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const { register, setValue, trigger } = useFormContext()
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const chevronRef = useRef<SVGSVGElement>(null)
