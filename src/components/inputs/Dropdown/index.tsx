@@ -8,9 +8,10 @@ import { chevronStyle, DropdownContainer, InputContainer, OptionLi, Options } fr
 type DropdownProps = { 
   inputId: 'firstName' | 'lastName' | 'street' | 'city' | 'zipCode' | 'state' | 'department' | 'birthDate' | 'startDate'
   label: string
+  options: string[] | null
   value?: string
   error?: string
-  options: string[] | null
+  loading?: boolean
 }
 
 const Dropdown = ({ 
@@ -18,6 +19,7 @@ const Dropdown = ({
   label, 
   value, 
   error, 
+  loading,
   options
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -79,6 +81,7 @@ const Dropdown = ({
         />
       </InputContainer>
       <Options isOpen={isOpen}>
+        {loading && <OptionLi>...loading</OptionLi>}
         {options?.map((option, index) => (
           <OptionLi 
             onClick={() => handleOptionSelect(option)} 
