@@ -1,45 +1,30 @@
+import { useFormContext } from "react-hook-form"
+
 import DateInput from "../../../../components/inputs/DateInput"
 import Dropdown from "../../../../components/inputs/Dropdown"
 import H2 from "../../../../components/text/H2"
-import { EmployeeType } from "../../../../types/employees"
-import { InputsErrorType } from "../../../../types/errors"
+import { getErrorMessage } from "../helpers/getErrorMessage"
 import { FormContent, FormPart } from "../styles"
-
-type JobSectionProps = {
-  formData: EmployeeType
-  inputsError: InputsErrorType
-  setFormData: (formData: EmployeeType) => void
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
 
 const department = ['Sales', 'Marketing', 'Engineering', 'Human Resources', 'Legal']
 
-const JobSection = ({ formData, inputsError, setFormData, handleChange }: JobSectionProps) => {
-  const handleSelectOption = (value: string) => {
-    setFormData({
-      ...formData,
-      department: value
-    })
-  }
-
+const JobSection = () => {
+  const { formState: { errors }, register, getValues } = useFormContext()
   return (
     <FormPart>
       <H2 text='Job' />
       <FormContent>
         <DateInput 
-          inputId='startDate' 
           label='Start date' 
-          error={inputsError.startDate} 
-          onChange={handleChange} 
+          error={getErrorMessage(errors.startDate?.message)} 
+          {...register('startDate')}
         />
         <Dropdown 
+          inputId='department'
           options={department} 
-          value={formData.department} 
-          inputId='department' 
+          value={getValues('department')} 
           label='Department' 
-          error={inputsError.department} 
-          onInputChange={handleChange}
-          handleSelect={handleSelectOption}
+          error={getErrorMessage(errors.department?.message)}
         />
       </FormContent>
     </FormPart>

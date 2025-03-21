@@ -1,19 +1,21 @@
+import { DetailedHTMLProps, InputHTMLAttributes } from 'react'
+
 import P from "../../text/P"
 import { errorStyle, Input, InputContainer, Label } from "./styles"
 
-type TextInputProps = { 
-  inputId: string
+type TextInputProps = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & { 
   label: string
-  value?: string
-  error: string | null
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  error?: string
 }
 
-const TextInput = ({ inputId, label, value, error, onChange }: TextInputProps) => {
+const TextInput = ({ label, error, ...inputProps }: TextInputProps) => {
   return (
     <InputContainer>
-      <Label htmlFor={inputId}>{label}</Label>
-      <Input type='text' id={inputId} name={inputId} value={value} onChange={(e) => onChange(e)} />
+      <Label htmlFor={inputProps.id}>{label}</Label>
+      <Input 
+        type='text' 
+        {...inputProps}
+      />
       {error && <P style={errorStyle}>{error}</P>}
     </InputContainer>
   )

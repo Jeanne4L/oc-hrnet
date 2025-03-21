@@ -20,7 +20,8 @@ export const ButtonContainer = styled.button<{variant: 'primary' | 'secondary'}>
   outline: none;
   border: solid 2px ${Colors.YELLOW};
   border-radius: ${BorderRadius.INPUT};
-  padding: ${Paddings.P2} ${Paddings.P4};
+  min-width: 95px;
+  padding: ${Paddings.P2};
   text-transform: uppercase;
   font-size: ${FontSizes.HEADER_LINK};
   font-weight: ${FontWeights.SEMI_BOLD};

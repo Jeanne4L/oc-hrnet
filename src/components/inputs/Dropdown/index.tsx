@@ -1,17 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 
 import ChevronIcon from '../../icons/Chevron'
 import TextInput from '../TextInput'
 import { chevronStyle, DropdownContainer, InputContainer, OptionLi, Options } from './styles'
 
 type DropdownProps = { 
-  inputId: string
+  inputId: 'firstName' | 'lastName' | 'street' | 'city' | 'zipCode' | 'state' | 'department' | 'birthDate' | 'startDate'
   label: string
   value?: string
-  error: string | null
+  error?: string
   options: string[] | null
-  onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  handleSelect: (option: string) => void
 }
 
 const Dropdown = ({ 
@@ -19,11 +18,11 @@ const Dropdown = ({
   label, 
   value, 
   error, 
-  options, 
-  onInputChange, 
-  handleSelect 
+  options
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const { register, setValue, trigger } = useFormContext()
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const chevronRef = useRef<SVGSVGElement>(null)
@@ -44,22 +43,16 @@ const Dropdown = ({
     }
   }, [isOpen])
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if(isOpen === false) {
-      setIsOpen(true)
-    }
-    onInputChange(event)
-  }
-
-  const handleDropdownDisplay = (event?: React.KeyboardEvent<SVGSVGElement>) => {
-    if(!event || event.key === 'Enter') {
+  const handleDropdownDisplay = (event: React.KeyboardEvent<SVGSVGElement>) => {
+    if(event.key === 'Enter') {
       setIsOpen(!isOpen)
     }
   }
 
   const handleOptionSelect = (option: string, event?: React.KeyboardEvent<HTMLElement>) => {
     if (!event || event.key === 'Enter') {
-      handleSelect(option)
+      setValue(inputId, option)
+      trigger(inputId)
       setIsOpen(false)
       chevronRef.current?.focus()
     }
@@ -69,11 +62,10 @@ const Dropdown = ({
     <DropdownContainer ref={dropdownRef}>
       <InputContainer>
         <TextInput 
-          inputId={inputId} 
           label={label} 
           error={error} 
-          value={value} 
-          onChange={handleInputChange} 
+          value={value}
+          {...register(inputId)}
         />
         <ChevronIcon 
           ref={chevronRef}
@@ -82,8 +74,8 @@ const Dropdown = ({
           height='42px' 
           style={chevronStyle} 
           isReturned={isOpen} 
-          onKeyDown={() => handleDropdownDisplay()} 
-          onClick={() => handleDropdownDisplay()} 
+          onKeyDown={(event) => handleDropdownDisplay(event)} 
+          onClick={() => setIsOpen(!isOpen)} 
         />
       </InputContainer>
       <Options isOpen={isOpen}>
