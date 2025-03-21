@@ -5,17 +5,13 @@ import H2 from "../../../../components/text/H2"
 import Dropdown from "../../../../components/inputs/Dropdown"
 import TextInput from "../../../../components/inputs/TextInput"
 import { CitiesPlaceType } from "../../../../services/api/getCities/types"
-import { getCities } from "../../../../services/api/getCities"
-import { checkIfErrorType } from "../../../../types/errors"
+import { useStatesData } from "../../../../hooks/useStatesData"
+import { useCitiesData } from "../../../../hooks/useCitiesData"
 import { getErrorMessage } from "../helpers/getErrorMessage"
 import { FormContent, FormPart } from "../styles"
 
-type AddressProps = {
-  states: string[] | null
-}
-
-const AddressSection = ({ states }: AddressProps) => {
-  const [filteredStates, setFilteredStates] = useState<string[] | null>(states)
+const AddressSection = () => {
+  const [filteredStates, setFilteredStates] = useState<string[] | null>(null)
   const [places, setPlaces] = useState<CitiesPlaceType[] | null>(null)
 
   const { formState: {errors}, control, register, setValue, getValues, trigger } = useFormContext()
@@ -24,10 +20,13 @@ const AddressSection = ({ states }: AddressProps) => {
   const city = useWatch({control, name: "city"})
   const state = useWatch({control, name: "state"})
 
-  useEffect(() => {
-    handleZipCode(zipCode)
-  }, [zipCode]) 
+  const { states, loading: statesLoading, error: statesError } = useStatesData()
+  const { cities, error: citiesError } = useCitiesData(zipCode)
 
+  useEffect(() => {
+    setFilteredStates(states)
+  },[states])
+  
   useEffect(() => {
     if (city) {
       handleCityChange(city)
@@ -39,29 +38,20 @@ const AddressSection = ({ states }: AddressProps) => {
       handleStateChange(state)
     }
   }, [state]) 
-  
-  const handleZipCode = async (zip: string) => {
-    if(!zip || zip.length < 5) {
-      setFilteredStates(states)
-      setValue("city", '')
-      setValue("state", '')
-    } else {
-      const citiesApi = await getCities(zip)
-    
-      if (!checkIfErrorType(citiesApi)) {
-        const filteredStates = states?.filter((state) =>
-          citiesApi.places.some((place) => place.state === state)
-        )
-    
-        setFilteredStates(filteredStates ?? [])
-        setPlaces([...citiesApi.places])
-        setValue("city", citiesApi.places[0].placeName)
-        setValue("state", citiesApi.places[0].state)
-  
-        trigger(["zipCode", "city", "state"])
-      }
+
+  useEffect(() => {
+    if (cities) {
+      const filteredStates = states?.filter((state) =>
+        cities.places.some((place) => place.state === state)
+      )
+      
+      setFilteredStates(filteredStates ?? [])
+      setPlaces([...cities.places])
+      setValue("city", cities.places[0].placeName)
+      setValue("state", cities.places[0].state)
+      trigger(["zipCode", "city", "state"])
     }
-  }
+  }, [cities])
   
   const handleCityChange = (city: string) => {
     const place = places?.find((place) => place.placeName === city)
@@ -93,7 +83,7 @@ const AddressSection = ({ states }: AddressProps) => {
         />
         <TextInput 
           label='City' 
-          error={getErrorMessage(errors.city?.message)} 
+          error={citiesError || getErrorMessage(errors.city?.message)} 
           value={getValues('city')} 
           {...register('city')}
         />
@@ -102,7 +92,8 @@ const AddressSection = ({ states }: AddressProps) => {
           value={getValues('state')} 
           inputId='state' 
           label='State' 
-          error={getErrorMessage(errors.state?.message)} 
+          loading={statesLoading}
+          error={statesError || getErrorMessage(errors.state?.message)} 
         />
       </FormContent>
     </FormPart>

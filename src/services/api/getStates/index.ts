@@ -1,10 +1,9 @@
 import axios from "axios"
 
 import { Urls } from "../../../constants/urls"
-import { checkIfAxiosSuccess } from "../../../types/axios"
 import { checkIfStatesData, StateType } from "./types"
 
-export const getStates = async (): Promise<StateType[] | { error: string }> => {
+export const getStates = async (): Promise<StateType[]> => {
   const result = await axios.post(
     `${Urls.STATES_API_URL}`,
     {
@@ -12,11 +11,9 @@ export const getStates = async (): Promise<StateType[] | { error: string }> => {
     }
   )
   
-  if(checkIfAxiosSuccess(result)) {
-    if(checkIfStatesData(result.data.data)) {
-      return result.data.data.states
-    }
+  if(checkIfStatesData(result.data.data)) {
+    return result.data.data.states
   }
 
-  return {error: 'An error occured while retrieving states'}
+  throw new Error('Invalid states data structure')
 }
