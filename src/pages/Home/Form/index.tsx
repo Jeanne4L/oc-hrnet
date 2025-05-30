@@ -37,6 +37,7 @@ const Form = () => {
       ])
       setIsModalOpen(true)
       setError(null)
+      methods.reset()
     } else {
       setError('Please fill in all fields')
     }
