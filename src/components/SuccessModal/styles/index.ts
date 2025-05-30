@@ -3,7 +3,6 @@ import styled from "@emotion/styled"
 
 import { Colors } from "../../../constants/colors"
 import { Margins } from "../../../constants/margins"
-import { Breakpoints } from "../../../constants/breakpoints"
 import { Paddings } from "../../../constants/paddings"
 import { BorderRadius } from "../../../constants/borderRadius"
 
@@ -17,6 +16,7 @@ export const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 24px;
 `
 
 export const Modal = styled.div`
@@ -24,16 +24,11 @@ export const Modal = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: ${Margins.M3};
+  gap: ${Margins.M4};
   width: 100%;
   max-width: 425px;
-  height: 100vh;
-  padding: ${Paddings.P3};
+  padding: ${Paddings.P4} ${Paddings.P3};
   border-radius: ${BorderRadius.INPUT};
-
-  @media(min-width: ${Breakpoints.MOBILE}) {
-    height: fit-content;
-  }
 `
 
 export const closeButtonStyle: CSSProperties = {

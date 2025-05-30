@@ -3,7 +3,7 @@ export enum Colors {
   DARK_BLUE = '#011826',
   RED_ALERT = '#FF3333',
   TRANSPARENT_BLUE = 'rgba(29,90,115, 0.3)',
-  OVERLAY = 'rgba(1,24,38, 0.6)',
+  OVERLAY = 'rgba(1,24,38, 0.9)',
   WHITE_TEXT = '#fff',
   YELLOW = '#F2C53D'
 }
