@@ -22,7 +22,7 @@ const Header = () => {
   return (
     <header>
       <HeaderContent>
-        <Logo/>
+        <Logo onClick={() => navigate('/')} />
 
         <Nav>
           <NavLink isCurrent={currentPage === 'home'} onClick={() => navigate('/')}>Create</NavLink>

@@ -68,7 +68,7 @@ const AddressSection = () => {
   }
 
   return (
-    <FormPart>
+    <FormPart id='address'>
       <H2 text='Address' />
       <FormContent>
         <TextInput 

@@ -7,6 +7,7 @@ import { useEmployees } from "../../../contexts/EmployeesContext"
 import { EmployeeType, emptyEmployee, formSchema } from "../../../types/employees"
 import SuccessModal from "../../../components/SuccessModal"
 import P from "../../../components/text/P"
+import Scroll from "../../../components/Scroll"
 import PersonalDetailsSection from "./PersonalDetailsSection"
 import FormActions from "./FormActions"
 import AddressSection from "./Address"
@@ -47,7 +48,9 @@ const Form = () => {
     <FormProvider {...methods}>
       <FormContainer onSubmit={methods.handleSubmit(onSubmit)}>
         <PersonalDetailsSection />
+        <Scroll target='address' />
         <AddressSection />
+        <Scroll target='job' />
         <JobSection />
         {error && <P style={errorStyle}>{error}</P>}
         <FormActions />
