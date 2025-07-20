@@ -1,4 +1,6 @@
 import { z } from "zod"
+
+import { createDate } from "../helpers/createDate"
 import { InputsError } from "./errors"
 
 const stringRegex = /^[A-Za-zÀ-ÿ\s'-]+$/
@@ -12,7 +14,7 @@ const stringField = (regex?: RegExp) =>
 const dateField = () =>
   z.string().nonempty({ message: requiredMessage })
     .refine((val) => !isNaN(Date.parse(val)), { message: InputsError.INCORRECT_FORMAT })
-    .transform((val) => new Date(val))
+    .transform((val) => createDate(val))
 
 export const formSchema = z.object({
   firstName: stringField(),
@@ -37,6 +39,6 @@ export const emptyEmployee: EmployeeType = {
   zipCode: '',
   state: '',
   department: '',
-  birthDate: new Date(),
-  startDate: new Date()
+  birthDate: createDate(Date.UTC(2000, 0, 1)),
+  startDate: createDate()
 }

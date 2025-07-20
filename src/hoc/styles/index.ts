@@ -7,5 +7,5 @@ export const Main = styled.main`
   width: 100%;
   max-width: ${Breakpoints.MAX_WIDTH};
   margin: auto;
-  padding: ${Paddings.P3};
+  padding: ${Paddings.P4} ${Paddings.P3} ${Paddings.P10} ${Paddings.P3};
 `
