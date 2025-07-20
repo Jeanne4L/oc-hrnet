@@ -8,8 +8,8 @@ const FormActions = () => {
 
   return (
     <ButtonsContainer>
-      <Button variant='primary' label='Save' type="submit" />
       <Button variant='secondary' label='Cancel' onClick={handleCancel} />
+      <Button variant='primary' label='Save' type="submit" />
     </ButtonsContainer>
   )
 }

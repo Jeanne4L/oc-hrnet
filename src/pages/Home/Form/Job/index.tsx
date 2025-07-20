@@ -11,7 +11,7 @@ const department = ['Sales', 'Marketing', 'Engineering', 'Human Resources', 'Leg
 const JobSection = () => {
   const { formState: { errors }, register, getValues } = useFormContext()
   return (
-    <FormPart>
+    <FormPart id='job'>
       <H2 text='Job' />
       <FormContent>
         <DateInput 

@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 
 import { Breakpoints } from "../../../../constants/breakpoints"
 import { Colors } from "../../../../constants/colors"
-import { FontSizes, FontWeights } from "../../../../constants/fonts"
+import { FontSizes } from "../../../../constants/fonts"
 import { Margins } from "../../../../constants/margins"
 import { Paddings } from "../../../../constants/paddings"
 
@@ -14,6 +14,10 @@ export const HeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  & > svg {
+    cursor: pointer;
+  }
 `
 
 export const Nav = styled.div`
