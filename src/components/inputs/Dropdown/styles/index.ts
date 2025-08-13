@@ -25,7 +25,7 @@ export const Options = styled.ul<{isOpen: boolean}>`
   right: 0;
   z-index: 100;
   transition: height 200ms;
-  height: ${props => props.isOpen ? '188px' : '0'};
+  max-height: ${props => props.isOpen ? '188px' : '0'};
   overflow-y: ${props => props.isOpen ? 'scroll' : 'hidden'};
 
   ::-webkit-scrollbar-thumb {
@@ -33,11 +33,12 @@ export const Options = styled.ul<{isOpen: boolean}>`
   }
 `
 
-export const OptionLi = styled.li`
+export const OptionLi = styled.li<{isNotClickable?: boolean}>`
   list-style-type: none;
   padding: ${Paddings.P2};
   border-radius: ${BorderRadius.INPUT};
   color: ${Colors.WHITE_TEXT};
+  pointer-events: ${props => props.isNotClickable ? 'none' : 'auto'};
   cursor: pointer;
   outline: none;
 

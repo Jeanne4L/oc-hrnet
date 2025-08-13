@@ -24,7 +24,7 @@ const Form = () => {
 
   const methods = useForm<EmployeeType>({
     resolver: zodResolver(formSchema),
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: emptyEmployee
   })
 

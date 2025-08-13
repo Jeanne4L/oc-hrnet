@@ -1,30 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
 
 import ChevronIcon from '../../icons/Chevron'
 import TextInput from '../TextInput'
 import { chevronStyle, DropdownContainer, InputContainer, OptionLi, Options } from './styles'
 
 type DropdownProps = { 
-  inputId: 'firstName' | 'lastName' | 'street' | 'city' | 'zipCode' | 'state' | 'department' | 'birthDate' | 'startDate'
   label: string
   options: string[] | null
-  value?: string
   error?: string
   loading?: boolean
+  onChange: (option: string) => void
+  value: string
 }
 
 const Dropdown = ({ 
-  inputId, 
-  label, 
-  value, 
+  label,
   error, 
   loading,
-  options
+  options,
+  onChange,
+  value
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-
-  const { register, setValue, trigger } = useFormContext()
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const chevronRef = useRef<SVGSVGElement>(null)
@@ -53,8 +50,7 @@ const Dropdown = ({
 
   const handleOptionSelect = (option: string, event?: React.KeyboardEvent<HTMLElement>) => {
     if (!event || event.key === 'Enter') {
-      setValue(inputId, option)
-      trigger(inputId)
+      onChange(option)
       setIsOpen(false)
       chevronRef.current?.focus()
     }
@@ -66,8 +62,8 @@ const Dropdown = ({
         <TextInput 
           label={label} 
           error={error} 
-          value={value}
-          {...register(inputId)}
+          value={value} 
+          onChange={(e) => onChange(e.target.value)}
         />
         <ChevronIcon 
           ref={chevronRef}
@@ -81,17 +77,21 @@ const Dropdown = ({
         />
       </InputContainer>
       <Options isOpen={isOpen}>
-        {loading && <OptionLi>...loading</OptionLi>}
-        {options?.map((option, index) => (
-          <OptionLi 
-            onClick={() => handleOptionSelect(option)} 
-            onKeyDown={(e) => handleOptionSelect(option, e)} 
-            key={index} 
-            tabIndex={isOpen ? 0 : -1}
-          >
-            {option}
-          </OptionLi>
-        ))}
+        {loading && <OptionLi isNotClickable>...loading</OptionLi>}
+        {options?.length ? (
+          options.map((option, index) => (
+            <OptionLi 
+              onClick={() => handleOptionSelect(option)} 
+              onKeyDown={(e) => handleOptionSelect(option, e)} 
+              key={index} 
+              tabIndex={isOpen ? 0 : -1}
+            >
+              {option}
+            </OptionLi>
+          ))
+        ) : (
+          <OptionLi isNotClickable>No result</OptionLi>
+        )}
       </Options>
     </DropdownContainer>
   )

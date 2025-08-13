@@ -4,7 +4,7 @@ import { createDate } from "../helpers/createDate"
 import { InputsError } from "./errors"
 
 const stringRegex = /^[A-Za-zÀ-ÿ\s'-]+$/
-const zipCodeRegex = /^\d{5}(-\d{4})?$/
+export const zipCodeRegex = /^\d{5}(-\d{4})?$/
 const streetRegex = /^[a-zA-Z0-9\-\#\./&', ]+$/
 const requiredMessage = 'Please fill in all fields'
 
