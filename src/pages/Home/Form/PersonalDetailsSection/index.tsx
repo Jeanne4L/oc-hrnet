@@ -14,17 +14,17 @@ const PersonalDetailsSection = () => {
       <FormContent>
         <TextInput 
           label='First name' 
-          error={getErrorMessage(errors.firstName?.message)} 
+          error={getErrorMessage(errors.firstName)} 
           {...register('firstName')}
         />
         <TextInput 
           label='Last name' 
-          error={getErrorMessage(errors.lastName?.message)} 
+          error={getErrorMessage(errors.lastName)} 
           {...register('lastName')}
         />
         <DateInput 
           label='Date of birth' 
-          error={getErrorMessage(errors.birthDate?.message)} 
+          error={getErrorMessage(errors.birthDate)} 
           {...register('birthDate')}
         />
       </FormContent>

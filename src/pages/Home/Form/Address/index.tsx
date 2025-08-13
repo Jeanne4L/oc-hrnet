@@ -1,99 +1,98 @@
-import { useEffect, useState } from "react"
-import { useWatch, useFormContext } from "react-hook-form"
+import { useEffect, useMemo } from "react"
+import { useWatch, useFormContext, Controller } from "react-hook-form"
 
 import H2 from "../../../../components/text/H2"
 import Dropdown from "../../../../components/inputs/Dropdown"
 import TextInput from "../../../../components/inputs/TextInput"
-import { CitiesPlaceType } from "../../../../services/api/getCities/types"
+import { zipCodeRegex } from "../../../../types/employees"
 import { useStatesData } from "../../../../hooks/useStatesData"
 import { useCitiesData } from "../../../../hooks/useCitiesData"
 import { getErrorMessage } from "../helpers/getErrorMessage"
 import { FormContent, FormPart } from "../styles"
 
 const AddressSection = () => {
-  const [filteredStates, setFilteredStates] = useState<string[] | null>(null)
-  const [places, setPlaces] = useState<CitiesPlaceType[] | null>(null)
-
-  const { formState: {errors}, control, register, setValue, getValues, trigger } = useFormContext()
+  const { formState: {errors}, control, register, setValue, clearErrors, setError } = useFormContext()
   
   const zipCode = useWatch({control, name: "zipCode"})
   const city = useWatch({control, name: "city"})
   const state = useWatch({control, name: "state"})
 
+  const isZipCodeValid = zipCodeRegex.test(zipCode)
+  
   const { states, loading: statesLoading, error: statesError } = useStatesData()
-  const { cities, error: citiesError } = useCitiesData(zipCode)
+  const { cities, error: citiesError } = useCitiesData(isZipCodeValid ? zipCode : undefined)
+
+  const places = useMemo(() => cities?.places ?? [], [cities])
+
+  const filteredStates = useMemo(() => {
+    if (!state) return states ?? []
+
+    return states?.filter(s => s.toLowerCase().includes(state.toLowerCase())) ?? []
+  }, [state, states])
 
   useEffect(() => {
-    setFilteredStates(states)
-  },[states])
-  
-  useEffect(() => {
-    if (city) {
-      handleCityChange(city)
+    if (!isZipCodeValid) {
+      setValue('city', '')
+      setValue('state', '')
+    } else if (cities?.places?.length) {
+      setValue('city', cities.places[0].placeName)
+      setValue('state', cities.places[0].state)
     }
-  }, [city]) 
+  }, [zipCode, isZipCodeValid, cities])
 
   useEffect(() => {
-    if (state) {
-      handleStateChange(state)
-    }
-  }, [state]) 
+    if (!city || !places.length) return
+
+    const place = places.find(p => p.placeName === city)
+    setValue('state', place?.state ?? '')
+  }, [city, places])
 
   useEffect(() => {
-    if (cities) {
-      const filteredStates = states?.filter((state) =>
-        cities.places.some((place) => place.state === state)
-      )
-      
-      setFilteredStates(filteredStates ?? [])
-      setPlaces([...cities.places])
-      setValue("city", cities.places[0].placeName)
-      setValue("state", cities.places[0].state)
-      trigger(["zipCode", "city", "state"])
-    }
-  }, [cities])
-  
-  const handleCityChange = (city: string) => {
-    const place = places?.find((place) => place.placeName === city)
+    if (!state) return
 
-    setValue("state", place?.state ?? "");
-    trigger("city")
-  }
-  
-  const handleStateChange = (stateValue: string) => {
-    const filterResult = filteredStates?.filter((state) =>
-      state.toLowerCase().includes(stateValue.toLowerCase())
-    )
-    setFilteredStates(filterResult ?? [])
-  }
+    const isValid = states.includes(state)
+
+    if (!isValid) {
+      setError('state', { type: 'manual', message: 'Please select a valid state' })
+    } else {
+      clearErrors('state')
+    }
+  }, [state, states])
 
   return (
     <FormPart id='address'>
       <H2 text='Address' />
       <FormContent>
-        <TextInput 
-          {...register('street')}
+        <TextInput
+          id='street'
           label='Street' 
-          error={getErrorMessage(errors.street?.message)} 
+          error={getErrorMessage(errors.street)} 
+          {...register('street')}
         />
         <TextInput 
-          {...register('zipCode')}
+          id='zipCode'
           label='Zip code' 
-          error={getErrorMessage(errors.zipCode?.message)} 
+          error={getErrorMessage(errors.zipCode)} 
+          {...register('zipCode')}
         />
         <TextInput 
+          id='city'
           label='City' 
-          error={citiesError || getErrorMessage(errors.city?.message)} 
-          value={getValues('city')} 
+          error={citiesError || getErrorMessage(errors.city)} 
           {...register('city')}
         />
-        <Dropdown 
-          options={states} 
-          value={getValues('state')} 
-          inputId='state' 
-          label='State' 
-          loading={statesLoading}
-          error={statesError || getErrorMessage(errors.state?.message)} 
+        <Controller
+          name="state"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Dropdown
+              {...field}
+              label="State"
+              loading={statesLoading}
+              options={filteredStates}
+              error={statesError || fieldState.error?.message}
+            />
+          )}
         />
       </FormContent>
     </FormPart>
