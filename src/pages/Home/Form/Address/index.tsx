@@ -87,6 +87,7 @@ const AddressSection = () => {
           render={({ field, fieldState }) => (
             <Dropdown
               {...field}
+              id="state"
               label="State"
               loading={statesLoading}
               options={filteredStates}

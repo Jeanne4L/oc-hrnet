@@ -9,6 +9,7 @@ type DropdownProps = {
   options: string[] | null
   error?: string
   loading?: boolean
+  id: string
   onChange: (option: string) => void
   value: string
 }
@@ -18,6 +19,7 @@ const Dropdown = ({
   error, 
   loading,
   options,
+  id,
   onChange,
   value
 }: DropdownProps) => {
@@ -64,6 +66,7 @@ const Dropdown = ({
           error={error} 
           value={value} 
           onChange={(e) => onChange(e.target.value)}
+          id={id}
         />
         <ChevronIcon 
           ref={chevronRef}

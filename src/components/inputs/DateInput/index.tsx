@@ -20,6 +20,7 @@ const DateInput = ({
       <Label htmlFor={inputProps.id}>{label}</Label>
       <Input 
         type='date' 
+        data-testid={inputProps.id}
         {...inputProps}
       />
       {error && <P style={errorStyle}>{error}</P>}
