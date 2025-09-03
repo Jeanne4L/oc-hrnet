@@ -14,6 +14,7 @@ const TextInput = ({ label, error, ...inputProps }: TextInputProps) => {
       <Label htmlFor={inputProps.id}>{label}</Label>
       <Input 
         type='text' 
+        data-testid={inputProps.id}
         {...inputProps}
       />
       {error && <P style={errorStyle}>{error}</P>}

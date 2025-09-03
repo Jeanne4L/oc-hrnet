@@ -13,16 +13,19 @@ const PersonalDetailsSection = () => {
       <H2 text='Personal details' />
       <FormContent>
         <TextInput 
+          id='firstName'
           label='First name' 
           error={getErrorMessage(errors.firstName)} 
           {...register('firstName')}
         />
         <TextInput 
+          id='lastName'
           label='Last name' 
           error={getErrorMessage(errors.lastName)} 
           {...register('lastName')}
         />
         <DateInput 
+          id='birthDate'
           label='Date of birth' 
           error={getErrorMessage(errors.birthDate)} 
           {...register('birthDate')}

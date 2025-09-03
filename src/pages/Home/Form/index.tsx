@@ -60,6 +60,7 @@ const Form = () => {
             buttonLabel={"See employees"} 
             handleButtonClick={() => navigate('/employees')} 
             handleClose={() => setIsModalOpen(false)} 
+            id='successModal'
           />
         )}
       </FormContainer>

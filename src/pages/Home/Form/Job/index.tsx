@@ -35,6 +35,7 @@ const JobSection = () => {
       <H2 text='Job' />
       <FormContent>
         <DateInput 
+          id='startDate'
           label='Start date' 
           error={getErrorMessage(errors.startDate)} 
           {...register('startDate')}
@@ -45,7 +46,8 @@ const JobSection = () => {
           render={({ field, fieldState }) => (
             <Dropdown
               {...field}
-              label="State"
+              id="department"
+              label="Department"
               options={filteredDepartments}
               error={fieldState.error?.message}
             />

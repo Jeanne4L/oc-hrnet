@@ -8,11 +8,12 @@ import { ModalOverlay, Modal, closeButtonStyle, ModalContent } from "./styles"
 type SuccessModalProps = {
   message: string
   buttonLabel: string
+  id?: string
   handleButtonClick: () => void
   handleClose: () => void
 }
 
-const SuccessModal = ({ message, buttonLabel, handleButtonClick, handleClose }: SuccessModalProps) => {
+const SuccessModal = ({ message, buttonLabel, id, handleButtonClick, handleClose }: SuccessModalProps) => {
   const buttonRef = useRef<HTMLButtonElement | null>(null)
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const SuccessModal = ({ message, buttonLabel, handleButtonClick, handleClose }: 
 
   return (
     <ModalOverlay onClick={handleClose}>
-      <Modal>
+      <Modal data-testid={id}>
         <CloseIcon onClick={handleClose} style={closeButtonStyle} />
         <ModalContent>
           <P>{message}</P>
