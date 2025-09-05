@@ -1,13 +1,13 @@
 import { Column, Table } from 'octable'
 
-import { useEmployees } from "../contexts/EmployeesContext"
-import { withHeader } from "../hoc/withHeader"
-import H1 from '../components/text/H1'
-import { Colors } from '../constants/colors'
-import { EmployeeType } from '../types/employees'
-import PageContainer from './parts/PageContainer'
+import { useEmployees } from "../../contexts/EmployeesContext"
+import { withHeader } from "../../hoc/withHeader"
+import PageContainer from '../parts/PageContainer'
+import H1 from '../../components/text/H1'
+import { Colors } from '../../constants/colors'
+import { EmployeeType } from '../../types/employees'
 
-const columns: Column<EmployeeType>[] = [
+export const columns: Column<EmployeeType>[] = [
   {
     id: 'firstName',
     name: 'First name'
@@ -46,7 +46,7 @@ const columns: Column<EmployeeType>[] = [
   },
 ]
 
-const EmployeesPage = () => {
+export const EmployeesPage = () => {
   const { employees } = useEmployees()
 
   const tableArgs = {
