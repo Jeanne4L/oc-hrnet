@@ -1,11 +1,11 @@
 import { Column, Table } from 'octable'
 
 import { useEmployees } from "../../contexts/EmployeesContext"
-import { withHeader } from "../../hoc/withHeader"
-import PageContainer from '../parts/PageContainer'
-import H1 from '../../components/text/H1'
 import { Colors } from '../../constants/colors'
 import { EmployeeType } from '../../types/employees'
+import Layout from '../../layouts/Layout'
+import H1 from '../../components/text/H1'
+import PageContainer from '../parts/PageContainer'
 
 export const columns: Column<EmployeeType>[] = [
   {
@@ -61,22 +61,24 @@ export const EmployeesPage = () => {
   }
   
   return (
-    <PageContainer>
-      <H1 text='Employees' uppercase />
+    <Layout>
+      <PageContainer>
+        <H1 text='Employees' uppercase />
 
-      <Table {...tableArgs}>
-        <Table.Toolbar>
-          <Table.EntriesSelector />
-          <Table.SearchBar />
-        </Table.Toolbar>
-        <Table.Content>
-          <Table.Head />
-          <Table.Body />
-        </Table.Content>
-        <Table.Pagination />
-      </Table>
-    </PageContainer>
+        <Table {...tableArgs}>
+          <Table.Toolbar>
+            <Table.EntriesSelector />
+            <Table.SearchBar />
+          </Table.Toolbar>
+          <Table.Content>
+            <Table.Head />
+            <Table.Body />
+          </Table.Content>
+          <Table.Pagination />
+        </Table>
+      </PageContainer>
+    </Layout>
   )
 }
 
-export default withHeader(EmployeesPage)
+export default EmployeesPage
