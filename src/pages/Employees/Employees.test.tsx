@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, test, vi } from "vitest"
+import { BrowserRouter } from "react-router-dom"
 
 import { EmployeesPage } from "."
 
@@ -11,19 +12,17 @@ vi.mock("../../contexts/EmployeesContext", () => ({
   })
 }))
 
-vi.mock("../../hoc/withHeader", () => ({
-  withHeader: (Component: any) => {
-    return () => <Component />
-  },
-}))
-
 describe('Employees Page', () => {
   beforeEach(() => {
-    render(<EmployeesPage />)
+    render(
+      <BrowserRouter>
+        <EmployeesPage />
+      </BrowserRouter>
+    )
   })
 
   test('contains the title "Employees"', () => {
-    const title = screen.getByText('Employees')
+    const title = screen.getByRole('heading', { name: 'Employees' })
     expect(title).toBeTruthy()
   })
 
