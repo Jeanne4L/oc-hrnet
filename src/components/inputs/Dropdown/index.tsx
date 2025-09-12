@@ -66,6 +66,7 @@ const Dropdown = ({
           error={error} 
           value={value} 
           onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setIsOpen(true)}
           id={id}
         />
         <ChevronIcon 

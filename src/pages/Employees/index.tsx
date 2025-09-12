@@ -57,7 +57,7 @@ export const EmployeesPage = () => {
     textColor: Colors.WHITE_TEXT,
     headerBg: 'rgba(29, 90, 115, 0.6)',
     rowBg: 'rgba(29, 90, 115, 0.2)',
-    entriesSelectOptions: [4, 10, 50]
+    entriesSelectOptions: [5, 10, 50]
   }
   
   return (
