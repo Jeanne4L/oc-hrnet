@@ -136,7 +136,7 @@ describe('Form', () => {
     const lastNameInput = screen.getByTestId('lastName')
     fireEvent.change(lastNameInput, { target: { value: 'Doe' } })
 
-    const birthDateInput = screen.getByTestId('birthDate')
+    const birthDateInput = screen.getByRole('textbox', { name: /date of birth/i })
     fireEvent.change(birthDateInput, { target: { value: '1980-05-03' } })
 
     const streetInput = screen.getByTestId('street')
@@ -151,7 +151,7 @@ describe('Form', () => {
     const stateInput = screen.getByTestId('state')
     fireEvent.change(stateInput, { target: { value: 'New York' } })
 
-    const startDateInput = screen.getByTestId('startDate')
+    const startDateInput = screen.getByRole('textbox', { name: /start date/i })
     fireEvent.change(startDateInput, { target: { value: '2020-05-03' } })
 
     const departmentInput = screen.getByTestId('department')
